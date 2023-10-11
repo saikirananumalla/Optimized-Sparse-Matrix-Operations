@@ -11,10 +11,6 @@ public abstract class Sentinel extends Node {
     return getValue(index);
   }
 
-  public int size(){
-    return indices.size();
-  }
-
   protected abstract List<Integer> getIndices();
 
   protected abstract void add(int index, Node n);

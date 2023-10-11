@@ -83,7 +83,7 @@ public class ArrayMatrix extends AbstractSquareMatrix {
       return other.postmul(this);
     }
 
-    float[][] result = getResultMatrix(other);
+    float[][] result = new float[this.size()][other.size()];
     for (int i = 0; i < this.size(); i += 1) {
       for (int j = 0; j < other.size(); j += 1) {
         result[i][j] = 0;
@@ -93,18 +93,5 @@ public class ArrayMatrix extends AbstractSquareMatrix {
       }
     }
     return new ArrayMatrix(result);
-  }
-
-  private float[][] getResultMatrix(SquareMatrix other) {
-    return new float[this.size()][other.size()];
-  }
-
-  public void print() {
-    for (int i = 0; i < size; i += 1) {
-      for (int j = 0; j < size; j += 1) {
-        System.out.print(mat[i][j] + "  ");
-      }
-      System.out.println("\n");
-    }
   }
 }

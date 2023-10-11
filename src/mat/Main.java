@@ -31,7 +31,7 @@ public class Main {
     m2.set(3,1,2);
     m2.set(2,0,2);
     m2.set(1,3,0);
-    m2.setIdentity();
+    //m2.setIdentity();
     m2.print();
 
     System.out.println();
@@ -46,7 +46,7 @@ public class Main {
     m3.set(2,0,2);
     m3.set(2,3,2);
     m3.set(1,3,2);
-    m3.setIdentity();
+    //m3.setIdentity();
     m3.print();
 
     System.out.println();

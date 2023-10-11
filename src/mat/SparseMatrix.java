@@ -55,160 +55,60 @@ public class SparseMatrix extends AbstractSquareMatrix{
   public SquareMatrix add(SquareMatrix other) throws IllegalArgumentException {
     validateEqualSize(other);
     SquareMatrix result;
-    if (other.getClass() == ArrayMatrix.class) {
-      result = new ArrayMatrix(size);
 
-      for (int i = 0; i < size; i += 1) {
-        int a = 0;
-        int c = size;
-        List<Integer> cols = rows.get(i).getIndices();
-        int b = 0;
-        int d = cols.size();
-
-        while (a < c && b < d) {
-          if (a < cols.get(b)) {
-            result.set(i, a, other.get(i, a));
-            a++;
-          } else if (a > cols.get(b)) {
-            result.set(i, cols.get(b), getUtil(i, cols.get(b)));
-            b++;
-          } else {
-            result.set(i, a, getUtil(i, a) + other.get(i, a));
-            a++;
-            b++;
-          }
-        }
-
-        while(a < c){
-          result.set(i, a, other.get(i, a));
-          a++;
-        }
-      }
-    }
-    else {
+    if (other.getClass() == SparseMatrix.class) {
       result = new SparseMatrix(size);
       SparseMatrix sm = (SparseMatrix) other;
 
       for (int i = 0; i < size; i += 1) {
-        List<Integer> cols = rows.get(i).getIndices();
-        List<Integer> cols1 = sm.rows.get(i).getIndices();
-        int a = 0;
-        int c = cols1.size();
-
-        int b = 0;
-        int d = cols.size();
-
-        while (a < c && b < d) {
-          Integer colA = cols1.get(a);
-          Integer colB = cols.get(b);
-
-          if (colA < colB) {
-            result.set(i, colA, other.get(i, colA));
-            a++;
-          } else if (colA > colB) {
-            result.set(i, colB, getUtil(i, colB));
-            b++;
-          } else {
-            result.set(i, colA, getUtil(i, colA) + other.get(i, colA));
-            a++;
-            b++;
-          }
-        }
-
-        while(a < c){
-          result.set(i, cols1.get(a), other.get(i, cols1.get(a)));
-          a++;
-        }
-
-        while(b < d){
-          result.set(i, cols.get(b), other.get(i, cols.get(b)));
-          b++;
-        }
+        List<Integer> cols1 = rows.get(i).getIndices();
+        List<Integer> cols2 = sm.rows.get(i).getIndices();
+        addRows(other, cols2, cols1, result, i);
       }
+    }
 
+    else {
+      result = new ArrayMatrix(size);
+
+      for (int i = 0; i < size; i += 1) {
+        List<Integer> cols = rows.get(i).getIndices();
+        addRows(other, cols, null, result, i);
+      }
     }
     return result;
   }
+
 
 
   @Override
   public SquareMatrix postmul(SquareMatrix other) throws IllegalArgumentException {
     validateEqualSize(other);
     SparseMatrix result = new SparseMatrix(size);
+
     if (other.getClass() == SparseMatrix.class) {
       SparseMatrix sm = (SparseMatrix) other;
+
       for (int i = 0; i < size; i += 1) {
         List<Integer> row = rows.get(i).getIndices();
+
         for (int j = 0; j < size; j+= 1) {
           List<Integer> col = sm.cols.get(j).getIndices();
-
-          int a = 0, b = 0;
-          int c = row.size(), d = col.size();
-
-          float sum = 0;
-
-          while(a<c&&b<d){
-
-            if (row.get(a) < col.get(b)){
-              a++;
-            }
-            else if (row.get(a) > col.get(b)){
-              b++;
-            }
-            else {
-              sum+= (get(i, row.get(a)) * other.get(col.get(b), j));
-              a++;
-              b++;
-            }
-          }
-
-          if(sum!=0) result.setUtil(i, j, sum);
-
+          multiplyRowAndColumn(other, row, col, i, j, result);
         }
       }
     }
+
     else {
 
       for (int i = 0; i < this.size(); i += 1) {
         List<Integer> row = rows.get(i).getIndices();
+
         for (int j = 0; j < size; j++) {
-
-          int a = 0, b = 0;
-          int c = row.size(), d = size;
-
-          float sum = 0;
-
-          while(a<c && b<d){
-
-            if (row.get(a) < b){
-              a++;
-            }
-            else if (row.get(a) > b){
-              b++;
-            }
-            else {
-              sum+= (get(i, row.get(a)) * other.get(b, j));
-              a++;
-              b++;
-            }
-          }
-
-          if(sum!=0) result.setUtil(i, j, sum);
-
+          multiplyRowAndColumn(other, row, null, i, j, result);
         }
       }
-
     }
     return result;
-  }
-
-  public void print() {
-    for (int i = 0; i < size; i += 1) {
-      for (int j = 0; j < size; j += 1) {
-        System.out.print(get(i, j) + "  ");
-      }
-      System.out.println("\n");
-    }
   }
 
   private float getUtil(int i, int j) {
@@ -228,6 +128,73 @@ public class SparseMatrix extends AbstractSquareMatrix{
     }
 
     rows.get(i).set(j, value);
+  }
+
+  private void addRows(SquareMatrix other, List<Integer> cols1, List<Integer> cols2,
+                       SquareMatrix result, int row) {
+    int a = 0;
+    int c = cols1.size();
+
+    int b = 0;
+    int d = (cols2 == null ? size : cols2.size());
+
+    while (a < c && b < d) {
+      Integer colA = cols1.get(a);
+      Integer colB = (cols2 == null ? b : cols2.get(b));
+
+      if (colA < colB) {
+        result.set(row, colA, other.get(row, colA));
+        a++;
+      } else if (colA > colB) {
+        result.set(row, colB, getUtil(row, colB));
+        b++;
+      } else {
+        result.set(row, colA, getUtil(row, colA) + other.get(row, colA));
+        a++;
+        b++;
+      }
+    }
+
+    while(a < c){
+      result.set(row, cols1.get(a), other.get(row, cols1.get(a)));
+      a++;
+    }
+
+    while(b < d){
+      int colB = (cols2 == null ? b : cols2.get(b));
+      result.set(row, colB, other.get(row, colB));
+      b++;
+    }
+  }
+
+  private void multiplyRowAndColumn(SquareMatrix other, List<Integer> row, List<Integer> col,
+                                    int rowNumber, int columnNumber, SparseMatrix result) {
+    int a = 0;
+    int b = 0;
+    int c = row.size();
+    int d = (col == null ? size : col.size());
+
+    float sum = 0;
+
+    while(a<c && b<d){
+
+      int colA = row.get(a);
+      int rowB = (col == null ? b : col.get(b));
+
+      if (colA < rowB){
+        a++;
+      }
+      else if (colA > rowB){
+        b++;
+      }
+      else {
+        sum+= (get(rowNumber, colA) * other.get(rowB, columnNumber));
+        a++;
+        b++;
+      }
+    }
+
+    if(sum!=0) result.setUtil(rowNumber, columnNumber, sum);
   }
 
 }
