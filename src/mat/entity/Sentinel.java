@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class to represent the starting node of a linked list as a sentinel.
+ * A class to represent the starting node of a linked list as a sentinel, this ideally takes care
+ * of the add, get, set and delete, and other operations of a linked list.
  */
 public abstract class Sentinel extends Node {
 
@@ -89,17 +90,6 @@ public abstract class Sentinel extends Node {
 
     indices.remove((Integer) index);
     ((DataNode) n).remove();
-  }
-
-  /**
-   * Set value of data node at a given index to given value.
-   *
-   * @param index index of node
-   * @param data  data to be set
-   */
-  protected void setValue(int index, float data) {
-    Node n = getNodeAtIndex(index);
-    ((DataNode) n).setData(data);
   }
 
   /**

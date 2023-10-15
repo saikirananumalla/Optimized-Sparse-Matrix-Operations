@@ -3,7 +3,8 @@ package mat;
 import java.util.List;
 
 /**
- * An abstract class to implement matrix operations add, post multiplication and pre multiplication.
+ * An abstract class to implement matrix operations add, post multiplication and pre multiplication,
+ * it subbranches into required methods of operation based on the subclass of the matrices given.
  */
 public abstract class MatrixOperation {
 
@@ -77,7 +78,7 @@ public abstract class MatrixOperation {
     int size = sparseMatrix.size();
 
     for (int i = 0; i < size; ++i) {
-      List<Integer> cols = sparseMatrix.rows.get(i).getIndices();
+      List<Integer> cols = sparseMatrix.getRows().get(i).getIndices();
       addRowsMixed(sparseMatrix, arrayMatrix, cols, result, i, size);
     }
 
@@ -88,8 +89,8 @@ public abstract class MatrixOperation {
     int size = sparseMatrix1.size();
 
     for (int i = 0; i < size; i++) {
-      List<Integer> cols = sparseMatrix1.rows.get(i).getIndices();
-      List<Integer> otherCols = sparseMatrix2.rows.get(i).getIndices();
+      List<Integer> cols = sparseMatrix1.getRows().get(i).getIndices();
+      List<Integer> otherCols = sparseMatrix2.getRows().get(i).getIndices();
       addRows(sparseMatrix1, sparseMatrix2, otherCols, cols, result, i);
     }
   }
@@ -114,7 +115,7 @@ public abstract class MatrixOperation {
     int size = arrayMatrix.size();
 
     for (int i = 0; i < size; ++i) {
-      List<Integer> col = sparseMatrix.cols.get(i).getIndices();
+      List<Integer> col = sparseMatrix.getCols().get(i).getIndices();
 
       for (int j = 0; j < size; ++j) {
         multiplyMixedType(arrayMatrix, sparseMatrix, col, j, i, result);
@@ -127,7 +128,7 @@ public abstract class MatrixOperation {
     int size = arrayMatrix.size();
 
     for (int i = 0; i < size; ++i) {
-      List<Integer> row = sparseMatrix.rows.get(i).getIndices();
+      List<Integer> row = sparseMatrix.getRows().get(i).getIndices();
 
       for (int j = 0; j < size; ++j) {
         multiplyMixedType(sparseMatrix, arrayMatrix, row, i, j, result);
@@ -140,10 +141,10 @@ public abstract class MatrixOperation {
     int size = sparseMatrix.size();
 
     for (int i = 0; i < size; i += 1) {
-      List<Integer> row = sparseMatrix.rows.get(i).getIndices();
+      List<Integer> row = sparseMatrix.getRows().get(i).getIndices();
 
       for (int j = 0; j < size; j += 1) {
-        List<Integer> col = sparseMatrix1.cols.get(j).getIndices();
+        List<Integer> col = sparseMatrix1.getCols().get(j).getIndices();
         multiplyRowAndColumn(sparseMatrix, sparseMatrix1, row, col, i, j, result);
       }
     }

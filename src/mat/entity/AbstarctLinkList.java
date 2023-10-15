@@ -3,7 +3,7 @@ package mat.entity;
 import java.util.List;
 
 /**
- * An abstract class to implement the link list class.
+ * An abstract class to implement the link list class using a head sentinel.
  */
 public abstract class AbstarctLinkList implements LinkList {
 
@@ -20,10 +20,6 @@ public abstract class AbstarctLinkList implements LinkList {
   @Override
   public float get(int index) {
     return head.get(index);
-  }
-
-  public void set(int index, float value) {
-    head.setValue(index, value);
   }
 
   @Override

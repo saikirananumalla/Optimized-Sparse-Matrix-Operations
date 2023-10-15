@@ -3,7 +3,7 @@ package mat.entity;
 import java.util.List;
 
 /**
- * A class to implement the linked list data structure.
+ * A class to implement the linked list data structure useful for a sparse matrix implementation.
  */
 public interface LinkList {
 
@@ -22,14 +22,6 @@ public interface LinkList {
    * @return value at that index
    */
   float get(int index);
-
-  /**
-   * Set the value at a given index in the list.
-   *
-   * @param index index of the node
-   * @param value value to be set in the node
-   */
-  void set(int index, float value);
 
   /**
    * Delete the node at a given index.

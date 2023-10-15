@@ -1,7 +1,8 @@
 package mat.entity;
 
 /**
- * A class to extend the link list implementation to a column linked list.
+ * A class to extend the link list implementation to a column linked list that uses a column type
+ * sentinel and links nodes in left and right fashion.
  */
 public class RowLinkList extends AbstarctLinkList {
 

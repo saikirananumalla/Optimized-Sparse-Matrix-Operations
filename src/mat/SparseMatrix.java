@@ -11,13 +11,14 @@ import mat.entity.RowLinkList;
 /**
  * This class implements a 2D matrix of numbers using Linked Lists. This implementation is efficient
  * if most of the entries of the matrix are zero. But this wastes a lot of computing time
- * if most of its entries are not zero, as set and get i, j is costly.
+ * if most of its entries are not zero, as set and get i, j is costly.At any given instance, this
+ * matrix only contains nonzero nodes in a linked fashion.
  */
 public class SparseMatrix extends AbstractSquareMatrix {
 
-  public final List<LinkList> rows;
+  private final List<LinkList> rows;
 
-  public final List<LinkList> cols;
+  private final List<LinkList> cols;
 
   /**
    * Constructs new matrix of the given dimensions. All row and col link lists are empty by default.
@@ -66,6 +67,14 @@ public class SparseMatrix extends AbstractSquareMatrix {
   public float get(int i, int j) throws IllegalArgumentException {
     validateIndices(i, j);
     return rows.get(i).get(j);
+  }
+
+  public List<LinkList> getRows() {
+    return rows;
+  }
+
+  public List<LinkList> getCols() {
+    return cols;
   }
 
   @Override

@@ -1,6 +1,4 @@
-import mat.ArrayMatrix;
-import mat.SparseMatrix;
-import mat.SquareMatrix;
+package mat;
 
 /**
  * A JUnit class to test the ArrayMatrix class and other matrix operations.
