@@ -3,17 +3,18 @@ import mat.SparseMatrix;
 import mat.SquareMatrix;
 
 /**
- * A JUnit class to test the ArrayMatrix class and other matrix operations.
+ * A JUnit class to test the SparseMatrix class and other matrix operations.
  */
-public class ArrayMatrixTest extends AbstractSquareMatrixTest {
+public class SparseMatrixTest extends AbstractSquareMatrixTest {
 
   @Override
   protected SquareMatrix getNewMatrix(int size) {
-    return new ArrayMatrix(size);
+    return new SparseMatrix(size);
   }
 
   @Override
   protected SquareMatrix getOtherMatrix(int size) {
-    return new SparseMatrix(size);
+    return new ArrayMatrix(size);
   }
 }
+

@@ -8,6 +8,7 @@ import java.util.Arrays;
  * time if most of its entries are zero.
  */
 public class ArrayMatrix extends AbstractSquareMatrix {
+
   private final float[][] mat;
 
   /**
@@ -26,11 +27,6 @@ public class ArrayMatrix extends AbstractSquareMatrix {
     }
   }
 
-  private ArrayMatrix(float[][] mat) throws IllegalArgumentException {
-    this.size = mat.length;
-    this.mat = mat;
-  }
-
   @Override
   public void setIdentity() {
     for (int i = 0; i < size; i += 1) {
@@ -47,51 +43,17 @@ public class ArrayMatrix extends AbstractSquareMatrix {
   @Override
   public void set(int i, int j, float value) throws IllegalArgumentException {
     validateIndices(i, j);
-
     mat[i][j] = value;
   }
 
   @Override
   public float get(int i, int j) throws IllegalArgumentException {
     validateIndices(i, j);
-
     return mat[i][j];
   }
 
   @Override
-  public SquareMatrix add(SquareMatrix other) throws IllegalArgumentException {
-    validateEqualSize(other);
-
-    if (other.getClass() == SparseMatrix.class){
-      return other.add(this);
-    }
-
-    float[][] result = new float[this.size()][this.size()];
-    for (int i = 0; i < this.size(); i += 1) {
-      for (int j = 0; j < size(); j += 1) {
-        result[i][j] = this.mat[i][j] + other.get(i, j);
-      }
-    }
-    return new ArrayMatrix(result);
-  }
-
-  @Override
-  public SquareMatrix postmul(SquareMatrix other) throws IllegalArgumentException {
-    validateEqualSize(other);
-
-    if (other.getClass() == SparseMatrix.class){
-      return other.postmul(this);
-    }
-
-    float[][] result = new float[this.size()][other.size()];
-    for (int i = 0; i < this.size(); i += 1) {
-      for (int j = 0; j < other.size(); j += 1) {
-        result[i][j] = 0;
-        for (int k = 0; k < this.size(); k += 1) {
-          result[i][j] += this.mat[i][k] * other.get(k, j);
-        }
-      }
-    }
-    return new ArrayMatrix(result);
+  protected SquareMatrix getNewMatrix(int size) {
+    return new ArrayMatrix(size);
   }
 }

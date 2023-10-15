@@ -2,6 +2,9 @@ package mat.entity;
 
 import java.util.List;
 
+/**
+ * An abstract class to implement the link list class.
+ */
 public abstract class AbstarctLinkList implements LinkList {
 
   private final Sentinel head;
@@ -10,7 +13,7 @@ public abstract class AbstarctLinkList implements LinkList {
     this.head = head;
   }
 
-  public void add(int index, Node n){
+  public void add(int index, DataNode n) {
     head.add(index, n);
   }
 
@@ -19,7 +22,7 @@ public abstract class AbstarctLinkList implements LinkList {
     return head.get(index);
   }
 
-  public void set(int index, float value){
+  public void set(int index, float value) {
     head.setValue(index, value);
   }
 
@@ -28,11 +31,11 @@ public abstract class AbstarctLinkList implements LinkList {
     head.remove(index);
   }
 
-  public void setIdentity(DataNode d){
+  public void setIdentity(DataNode d) {
     head.setIdentity(d);
   }
 
-  public List<Integer> getIndices(){
+  public List<Integer> getIndices() {
     return head.getIndices();
   }
 }

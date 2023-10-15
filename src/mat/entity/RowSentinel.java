@@ -1,6 +1,10 @@
 package mat.entity;
 
-public class RowSentinel extends AbstractSentinel{
+/**
+ * A class to extend the sentinel implementation to a row sentinel where a node's next will be
+ * right and prev is left.
+ */
+public class RowSentinel extends Sentinel {
 
   @Override
   protected int getIndex(DataNode c) {

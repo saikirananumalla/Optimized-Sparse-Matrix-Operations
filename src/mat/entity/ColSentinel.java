@@ -1,6 +1,10 @@
 package mat.entity;
 
-public class ColSentinel extends AbstractSentinel{
+/**
+ * A class to extend the sentinel implementation to a column sentinel where a node's next will be
+ * down and prev is up.
+ */
+public class ColSentinel extends Sentinel {
 
   protected int getIndex(DataNode c) {
     return c.getRow();
