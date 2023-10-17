@@ -3,7 +3,7 @@ package mat.entity;
 import java.util.List;
 
 /**
- * An abstract class to implement the link list class using a head sentinel.
+ * An abstract class to implement the link list class using a head sentinel and data nodes.
  */
 public abstract class AbstarctLinkList implements LinkList {
 

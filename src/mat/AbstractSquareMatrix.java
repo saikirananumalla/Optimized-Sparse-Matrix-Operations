@@ -28,7 +28,7 @@ public abstract class AbstractSquareMatrix implements SquareMatrix {
   }
 
   /**
-   * Gets a new matrix based on the sub class.
+   * Gets a new matrix based on the subclass.
    *
    * @param size size of the new matrix
    * @return new Square matrix

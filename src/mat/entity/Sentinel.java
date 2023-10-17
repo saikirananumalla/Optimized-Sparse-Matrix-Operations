@@ -1,7 +1,6 @@
 package mat.entity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -9,8 +8,6 @@ import java.util.List;
  * of the add, get, set and delete, and other operations of a linked list.
  */
 public abstract class Sentinel extends Node {
-
-  protected List<Integer> indices;
 
   /**
    * Gets the data at a given index in the list starting with this sentinel.
@@ -29,7 +26,6 @@ public abstract class Sentinel extends Node {
    */
   public Sentinel() {
     resetThis();
-    resetIndices();
   }
 
   /**
@@ -88,7 +84,6 @@ public abstract class Sentinel extends Node {
       return;
     }
 
-    indices.remove((Integer) index);
     ((DataNode) n).remove();
   }
 
@@ -99,7 +94,6 @@ public abstract class Sentinel extends Node {
    */
   protected void setIdentity(DataNode d) {
     resetThis();
-    resetIndices();
     addAtNode(d, this);
   }
 
@@ -109,8 +103,13 @@ public abstract class Sentinel extends Node {
    * @return list of indexes
    */
   protected List<Integer> getIndices() {
-    Collections.sort(indices);
-    return indices;
+    List<Integer> res = new ArrayList<>();
+    Node c = getNext(this);
+    while (c != this) {
+      res.add(getIndex((DataNode) c));
+      c = getNext(c);
+    }
+    return res;
   }
 
   /**
@@ -156,14 +155,12 @@ public abstract class Sentinel extends Node {
     setPrev(n, getPrev(pos));
     setNext(getPrev(pos), n);
     setPrev(pos, n);
-
-    indices.add(getIndex((DataNode) n));
   }
 
   private Node getNodeAtIndex(int index) {
     Node c = getNext(this);
 
-    while (c != this && index < getIndex((DataNode) (c))) {
+    while (c != this && index > getIndex((DataNode) (c))) {
       c = getNext(c);
     }
     return c;
@@ -172,10 +169,6 @@ public abstract class Sentinel extends Node {
   private void resetThis() {
     setPrev(this, this);
     setNext(this, this);
-  }
-
-  private void resetIndices() {
-    indices = new ArrayList<>();
   }
 
   private void validateIndex(int index) {

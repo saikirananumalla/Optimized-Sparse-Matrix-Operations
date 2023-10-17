@@ -2,7 +2,7 @@ package mat.entity;
 
 /**
  * A class to extend the link list implementation to a column linked list that uses a column type
- * sentinel and links nodes in up and down fashion.
+ * sentinel and links data nodes in up and down fashion.
  */
 public class ColLinkList extends AbstarctLinkList {
 

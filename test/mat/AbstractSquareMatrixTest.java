@@ -11,11 +11,11 @@ import static org.junit.Assert.assertTrue;
  */
 public abstract class AbstractSquareMatrixTest {
 
-  public static final char ADD = '+';
-  public static final char POST_MUL = '*';
-  public static final char PRE_MUL = '/';
+  private static final char ADD = '+';
+  private static final char POST_MUL = '*';
+  private static final char PRE_MUL = '/';
 
-  protected SquareMatrix sqm;
+  private SquareMatrix sqm;
 
   @Before
   public void setUp() {

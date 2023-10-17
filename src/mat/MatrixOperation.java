@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class MatrixOperation {
 
   /**
-   * Add the given two square matrices.
+   * Add the given two square matrices by calling the respective util class based on subtypes.
    *
    * @param squareMatrix1 square matrix 1
    * @param squareMatrix2 square matrix 2
@@ -36,7 +36,8 @@ public abstract class MatrixOperation {
 
 
   /**
-   * Post multiply the given two square matrices.
+   * Post multiply the given two square matrices by calling the respective util class based on
+   * subtypes.
    *
    * @param squareMatrix1 square matrix 1
    * @param squareMatrix2 square matrix 2

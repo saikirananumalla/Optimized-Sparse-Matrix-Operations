@@ -69,5 +69,4 @@ public interface SquareMatrix {
    * @return the size of this matrix
    */
   int size();
-
 }
