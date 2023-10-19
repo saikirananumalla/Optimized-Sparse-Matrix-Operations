@@ -1,6 +1,9 @@
 package mat;
 
 import java.util.Arrays;
+import java.util.List;
+
+import mat.entity.Pair;
 
 /**
  * This class implements a 2D matrix of numbers using a 2D array. This implementation is efficient
@@ -53,7 +56,80 @@ public class ArrayMatrix extends AbstractSquareMatrix {
   }
 
   @Override
-  protected SquareMatrix getNewMatrix(int size) {
-    return new ArrayMatrix(size);
+  public SquareMatrix add(SquareMatrix other) throws IllegalArgumentException {
+    validateEqualSize(other);
+    return ((AbstractSquareMatrix) other).addArrayMatrix(this);
+  }
+
+  @Override
+  public SquareMatrix premul(SquareMatrix other) throws IllegalArgumentException {
+    validateEqualSize(other);
+    return ((AbstractSquareMatrix) other).postMulArrayMatrix(this);
+  }
+
+  @Override
+  protected SquareMatrix addArrayMatrix(ArrayMatrix arr) {
+    SquareMatrix result = new ArrayMatrix(size);
+
+    for (int i = 0; i < size; i += 1) {
+      for (int j = 0; j < size; j += 1) {
+        result.set(i, j, this.get(i, j) + arr.get(i, j));
+      }
+    }
+
+    return result;
+  }
+
+  @Override
+  protected SquareMatrix addSparseMatrix(SparseMatrix spm) {
+    SquareMatrix result = new ArrayMatrix(size);
+
+    for (int i = 0; i < size; ++i) {
+      List<Pair> cols = spm.getRow(i).getIndices();
+      addRowsMixed(this, cols, result, i, size);
+    }
+
+    return result;
+  }
+
+  @Override
+  protected SquareMatrix postMulArrayMatrix(ArrayMatrix arr) {
+    SquareMatrix result = new ArrayMatrix(size);
+
+    for (int i = 0; i < size; i += 1) {
+      for (int j = 0; j < size; j += 1) {
+        float sum = 0;
+        for (int k = 0; k < size; k += 1) {
+          sum += get(i, k) * arr.get(k, j);
+        }
+        result.set(i, j, sum);
+      }
+    }
+
+    return result;
+  }
+
+  @Override
+  protected SquareMatrix postMulSparseMatrix(SparseMatrix spm) {
+    SquareMatrix result = new ArrayMatrix(size);
+
+    for (int i = 0; i < size; ++i) {
+      List<Pair> col = spm.getCol(i).getIndices();
+
+      for (int j = 0; j < size; ++j) {
+
+        float sum = 0;
+
+        for (Pair pair : col) {
+          sum += (pair.value * get(j, pair.index));
+        }
+
+        if (sum != 0) {
+          result.set(j, i, sum);
+        }
+      }
+    }
+
+    return result;
   }
 }

@@ -1,7 +1,12 @@
 package mat;
 
+import java.util.List;
+
+import mat.entity.Pair;
+
 /**
- * A class to abstract square matrix validations and implementations.
+ * A class to abstract square matrix validations and implementations including a double dispatch
+ * based on the subtype of matrices to be operated upon.
  */
 public abstract class AbstractSquareMatrix implements SquareMatrix {
 
@@ -13,27 +18,46 @@ public abstract class AbstractSquareMatrix implements SquareMatrix {
   }
 
   @Override
-  public SquareMatrix add(SquareMatrix other) throws IllegalArgumentException {
-    return performOperation(other, '+');
-  }
-
-  @Override
   public SquareMatrix postmul(SquareMatrix other) throws IllegalArgumentException {
-    return performOperation(other, '*');
-  }
-
-  @Override
-  public SquareMatrix premul(SquareMatrix other) throws IllegalArgumentException {
-    return other.postmul(this);
+    validateEqualSize(other);
+    return other.premul(this);
   }
 
   /**
-   * Gets a new matrix based on the subclass.
+   * Add array matrix factory method, this method adds array matrix to the matrix type that
+   * implements this.
    *
-   * @param size size of the new matrix
-   * @return new Square matrix
+   * @param arr ArrayMatrix
+   * @return new SquareMatrix as result
    */
-  protected abstract SquareMatrix getNewMatrix(int size);
+  protected abstract SquareMatrix addArrayMatrix(ArrayMatrix arr);
+
+  /**
+   * Add array matrix factory method, this method adds array matrix to the matrix type that
+   * implements this.
+   *
+   * @param spm SparseMatrix
+   * @return new SquareMatrix as result
+   */
+  protected abstract SquareMatrix addSparseMatrix(SparseMatrix spm);
+
+  /**
+   * Post multiply array matrix factory method, this method adds array matrix to the matrix type
+   * that implements this.
+   *
+   * @param arr ArrayMatrix
+   * @return new SquareMatrix as result
+   */
+  protected abstract SquareMatrix postMulArrayMatrix(ArrayMatrix arr);
+
+  /**
+   * Post multiply array matrix factory method, this method adds array matrix to the matrix type
+   * that implements this.
+   *
+   * @param spm SparseMatrix
+   * @return new SquareMatrix as result
+   */
+  protected abstract SquareMatrix postMulSparseMatrix(SparseMatrix spm);
 
   /**
    * Validate size if non-negative.
@@ -52,7 +76,7 @@ public abstract class AbstractSquareMatrix implements SquareMatrix {
    * @param other other matrix to be checked
    */
   protected void validateEqualSize(SquareMatrix other) {
-    if (this.size() != other.size()) {
+    if (other == null || this.size() != other.size()) {
       throw new IllegalArgumentException("The dimensions of the two matrices do not match");
     }
   }
@@ -69,18 +93,15 @@ public abstract class AbstractSquareMatrix implements SquareMatrix {
     }
   }
 
-  private SquareMatrix performOperation(SquareMatrix other, char c) {
-    validateEqualSize(other);
-    SquareMatrix result = getNewMatrix(size);
-    operate(other, result, c);
-    return result;
-  }
+  protected static void addRowsMixed(SquareMatrix a, List<Pair> cols,
+                                     SquareMatrix result, int row, int size) {
+    for (int i = 0; i < size; i++) {
+      result.set(row, i, a.get(row, i));
+    }
 
-  private void operate(SquareMatrix other, SquareMatrix result, char c) {
-    if (c == '+') {
-      MatrixOperation.add(this, other, result);
-    } else {
-      MatrixOperation.multiply(this, other, result);
+    for (Pair col : cols) {
+      result.set(row, col.index, result.get(row, col.index) + col.value);
     }
   }
+
 }

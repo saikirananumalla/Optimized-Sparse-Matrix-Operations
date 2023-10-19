@@ -17,24 +17,31 @@ public abstract class Sentinel extends Node {
    */
   public float get(int index) {
     validateIndex(index);
-    return getValue(index);
+
+    Node n = getNodeAtIndex(index);
+
+    if (n == this || getIndex((DataNode) n) != index) {
+      return 0;
+    }
+    return ((DataNode) n).getData();
   }
 
   /**
    * Create a new instance of sentinel with this next and prev pointing to this and indices is an
    * empty list.
    */
-  public Sentinel() {
+  protected Sentinel() {
     resetThis();
   }
 
   /**
-   * Adds the dataNode at a given index in the list starting with this sentinel.
+   * Adds the dataNode at a given index, or updates data value if index is same in the list
+   * starting with this sentinel.
    *
    * @param index index to be inserted at
    * @param n     DataNode to be inserted
    */
-  protected void add(int index, DataNode n) {
+  public void add(int index, DataNode n) {
     Node pos = getNodeAtIndex(index);
     if (pos != this && getIndex((DataNode) pos) == getIndex(n)) {
       ((DataNode) pos).setData(n.getData());
@@ -44,40 +51,11 @@ public abstract class Sentinel extends Node {
   }
 
   /**
-   * Util method to get the data at a given index in the list starting with this sentinel.
-   *
-   * @param index index of the node
-   * @return float value of data in the node
-   */
-  protected float getValue(int index) {
-    DataNode n = getDataNode(index);
-    if (n == null) {
-      return 0;
-    }
-    return n.getData();
-  }
-
-  /**
-   * Get the data node at a given index, if not equal to this sentinel and has the same index.
-   *
-   * @param index index of node
-   * @return data node
-   */
-  protected DataNode getDataNode(int index) {
-    Node n = getNodeAtIndex(index);
-
-    if (n == this || getIndex((DataNode) n) != index) {
-      return null;
-    }
-    return (DataNode) n;
-  }
-
-  /**
    * Delete the data node at the index if the index exists in the list headed by this sentinel.
    *
    * @param index index of node
    */
-  protected void remove(int index) {
+  public void remove(int index) {
     Node n = getNodeAtIndex(index);
 
     if (n == this || index != (getIndex((DataNode) n))) {
@@ -92,7 +70,7 @@ public abstract class Sentinel extends Node {
    *
    * @param d data node to be appended
    */
-  protected void setIdentity(DataNode d) {
+  public void setIdentity(DataNode d) {
     resetThis();
     addAtNode(d, this);
   }
@@ -102,15 +80,16 @@ public abstract class Sentinel extends Node {
    *
    * @return list of indexes
    */
-  protected List<Integer> getIndices() {
-    List<Integer> res = new ArrayList<>();
+  public List<Pair> getIndices() {
+    List<Pair> res = new ArrayList<>();
     Node c = getNext(this);
     while (c != this) {
-      res.add(getIndex((DataNode) c));
+      res.add(new Pair(getIndex((DataNode) c), ((DataNode) c).getData()));
       c = getNext(c);
     }
     return res;
   }
+
 
   /**
    * Gets the row index for a column sentinel and vice-versa.

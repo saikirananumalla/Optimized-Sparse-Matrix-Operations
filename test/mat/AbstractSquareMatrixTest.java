@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -46,6 +47,12 @@ public abstract class AbstractSquareMatrixTest {
     SquareMatrix res = performOperation(sqm2, sqm1, ADD);
 
     assertEquals(0, res.size());
+
+    SquareMatrix sqm3 = getNewMatrix(0);
+    SquareMatrix sqm4 = getOtherMatrix(0);
+    SquareMatrix res1 = performOperation(sqm3, sqm4, ADD);
+
+    assertEquals(0, res1.size());
 
   }
 
@@ -182,6 +189,16 @@ public abstract class AbstractSquareMatrixTest {
     assertEquals(3, sqm.get(2, 2), 0.001);
   }
 
+  @Test
+  public void testGet_NonExisting() {
+    assertEquals(0, sqm.get(2, 3), 0.001);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testAdd_Null() {
+    performOperation(sqm, null, ADD);
+  }
+
 
   @Test(expected = IllegalArgumentException.class)
   public void testAdd_DiffSize() {
@@ -197,6 +214,22 @@ public abstract class AbstractSquareMatrixTest {
   @Test
   public void testAdd_MixedType() {
     assertTrue(operateAndTestResult(getNewMatrix(4), getOtherMatrix(4), ADD));
+  }
+
+  @Test
+  public void testAdd_Symmetry() {
+    SquareMatrix s = getOtherMatrix(4);
+    s.setIdentity();
+
+    SquareMatrix a1 = performOperation(sqm, s, ADD);
+    SquareMatrix a2 = performOperation(s, sqm, ADD);
+
+    assertTrue(isEqual(a1, a2));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testPostMul_Null() {
+    performOperation(sqm, null, POST_MUL);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -216,6 +249,11 @@ public abstract class AbstractSquareMatrixTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
+  public void testPreMul_Null() {
+    performOperation(sqm, null, PRE_MUL);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
   public void testPreMul_DiffSize() {
     sqm.premul(getNewMatrix(3));
   }
@@ -229,6 +267,39 @@ public abstract class AbstractSquareMatrixTest {
   @Test
   public void testPreMul_MixedType() {
     assertTrue(operateAndTestResult(getNewMatrix(4), getOtherMatrix(4), PRE_MUL));
+  }
+
+  @Test
+  public void testMultiplication_Symmetry() {
+    SquareMatrix one = getNewMatrix(4);
+    SquareMatrix two = getOtherMatrix(4);
+    SquareMatrix three = getNewMatrix(4);
+    three.setIdentity();
+    setMatrixValues(one, two);
+
+    SquareMatrix m1 = performOperation(one, two, POST_MUL);
+    SquareMatrix m2 = performOperation(two, one, PRE_MUL);
+
+    assertTrue(isEqual(m1, m2));
+
+    SquareMatrix m3 = performOperation(one, three, POST_MUL);
+    SquareMatrix m4 = performOperation(three, one, PRE_MUL);
+
+    assertTrue(isEqual(m3, one));
+    assertTrue(isEqual(m4, one));
+    assertTrue(isEqual(m3, m4));
+  }
+
+  @Test
+  public void testMultiplication_NonSymmetry() {
+    SquareMatrix one = getNewMatrix(4);
+    SquareMatrix two = getOtherMatrix(4);
+    setMatrixValues(one, two);
+
+    SquareMatrix m1 = performOperation(one, two, POST_MUL);
+    SquareMatrix m2 = performOperation(one, two, PRE_MUL);
+
+    assertFalse(isEqual(m1, m2));
   }
 
 
@@ -259,7 +330,7 @@ public abstract class AbstractSquareMatrixTest {
   }
 
   @Test
-  public void testMultiplyWithIdentity_DiffType() {
+  public void testMultiplyWithIdentity_MixedType() {
     SquareMatrix s = getOtherMatrix(4);
     s.setIdentity();
     assertTrue(isEqual(sqm, sqm.postmul(s)));
@@ -287,7 +358,7 @@ public abstract class AbstractSquareMatrixTest {
   }
 
   @Test
-  public void testLargeMatrices_DiffType() {
+  public void testLargeMatrices_MixedType() {
     int size = 2000;
     SquareMatrix one = getNewMatrix(size);
     SquareMatrix two = getOtherMatrix(size);
